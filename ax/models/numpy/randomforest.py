@@ -133,3 +133,55 @@ def _rf_predict(
         f[:, i] = preds.mean(0)
         cov[:, i, i] = preds.var(0)
     return f, cov
+
+# function above returns mean and var.
+from typing import Any, Callable, Dict, List, Optional, Tuple
+from ax.models.types import TConfig
+from ax.core.types import TCandidateMetadata, TGenMetadata
+def gen(
+        self,
+        n: int,
+        bounds: List[Tuple[float, float]],
+        objective_weights: np.ndarray,
+        outcome_constraints: Optional[Tuple[np.ndarray, np.ndarray]] = None,
+        linear_constraints: Optional[Tuple[np.ndarray, np.ndarray]] = None,
+        fixed_features: Optional[Dict[int, float]] = None,
+        pending_observations: Optional[List[np.ndarray]] = None,
+        model_gen_options: Optional[TConfig] = None,
+        rounding_func: Optional[Callable[[np.ndarray], np.ndarray]] = None,
+    ) -> Tuple[
+        np.ndarray, np.ndarray, TGenMetadata, Optional[List[TCandidateMetadata]]
+    ]:
+        """
+        Generate new candidates.
+
+        Args:
+            n: Number of candidates to generate.
+            bounds: A list of (lower, upper) tuples for each column of X.
+            objective_weights: The objective is to maximize a weighted sum of
+                the columns of f(x). These are the weights.
+            outcome_constraints: A tuple of (A, b). For k outcome constraints
+                and m outputs at f(x), A is (k x m) and b is (k x 1) such that
+                A f(x) <= b.
+            linear_constraints: A tuple of (A, b). For k linear constraints on
+                d-dimensional x, A is (k x d) and b is (k x 1) such that
+                A x <= b.
+            fixed_features: A map {feature_index: value} for features that
+                should be fixed to a particular value during generation.
+            pending_observations:  A list of m (k_i x d) feature arrays X
+                for m outcomes and k_i pending observations for outcome i.
+            model_gen_options: A config dictionary that can contain
+                model-specific options.
+            rounding_func: A function that rounds an optimization result (xbest)
+                appropriately (i.e., according to `round-trip` transformations)
+
+        Returns:
+            4-element tuple containing
+
+            - (n x d) tensor of generated points.
+            - n-tensor of weights for each point.
+            - Generation metadata
+            - Dictionary of model-specific metadata for the given
+                generation candidates
+        """
+        pass
